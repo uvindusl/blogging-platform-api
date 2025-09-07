@@ -1,20 +1,17 @@
-from fastapi import FastAPI, APIRouter
-
+from fastapi import FastAPI, APIRouter, Depends
+from .. import models
+from ..database import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/posts",
     tags=['Posts']
 )
 
-# dict to test 
-posts = [
-    {"id": 1, "title": "fisrt post", "content" : "hi everyone", "category" : "Blog", "tags" : ["blogs", "ig"]},
-    {"id": 2,"title": "second post", "content" : "hi everyone2", "category" : "Sport", "tags" : ["match", "cricket"]}
-]
-
 # method to get all post
 @router.get("/")
-def get_blog_posts():
+def get_blog_posts(db:Session = Depends(get_db)):
+    posts = db.query(models.Post).all()
     return posts
 
 
