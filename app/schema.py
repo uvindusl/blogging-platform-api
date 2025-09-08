@@ -6,14 +6,14 @@ class PostBase(BaseModel):
     content: str
     category: str
     tags: set
-    created_at: datetime
-    updated_at: datetime
 
 class PostCreate(PostBase):
     pass
 
 class Post(PostBase):
-    pass
+    id: int
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         orm_mode: True

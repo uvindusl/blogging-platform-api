@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Depends
+from fastapi import FastAPI, APIRouter, Depends, status
 from .. import models, schema
 from ..database import get_db
 from sqlalchemy.orm import Session
@@ -17,4 +17,11 @@ def get_blog_posts(db:Session = Depends(get_db)):
 
 
 # method to create posts
-# @router.post()
+@router.post('/',response_model=schema.Post, status_code=status.HTTP_201_CREATED)
+def create_posts(post: schema.PostCreate, db:Session = Depends(get_db)):
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+
+    return new_post
