@@ -3,6 +3,7 @@ from .. import models, schema
 from ..database import get_db
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import datetime
 
 router = APIRouter(
     prefix="/posts",
@@ -47,3 +48,18 @@ def delete_post(id: int, db:Session = Depends(get_db)):
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+# method to update a post
+@router.put('/{id}', response_model=schema.Post)
+def update_post(id: int, update_post: schema.PostCreate, db:Session = Depends(get_db)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Post with id: {id} not found')
+   
+    updated_field = update_post.dict()
+
+    updated_field['updated_at'] = datetime.now()
+
+    post_query.update(updated_field, synchronize_session=False)
+    db.commit()
+    return post_query.first()
