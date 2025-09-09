@@ -52,5 +52,5 @@ This is a RESTful API for a blogging platform, built with FastAPI, designed to m
 You can run the API server using :
 ```bash
 fastapi app/main.py
-
+```
 https://roadmap.sh/projects/blogging-platform-api
